@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <span class="hero-badge"><i class="bi bi-lightning-charge-fill"></i> Next-gen gear, in stock now</span>
+                <h1 class="hero-title">Every console. Every controller.<br>One <span class="accent">GameHub</span>.</h1>
+                <p class="hero-sub mt-3">Shop the latest PlayStation, Xbox, Nintendo and PC gear — consoles, controllers, headsets and accessories, all in one place with fast shipping and real warranties.</p>
+                <div class="d-flex gap-3 mt-4 flex-wrap">
+                    <a href="{% url 'store:product_list_by_category' 'consoles' %}" class="btn btn-accent btn-lg px-4">Shop Consoles</a>
+                    <a href="{% url 'store:product_list' %}" class="btn btn-outline-accent btn-lg px-4">Browse All Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container py-5">
+    <div class="section-heading">
+        <h2>Shop by Category</h2>
+    </div>
+    <div class="row g-3 mb-5">
+        {% for cat in categories %}
+        <div class="col-6 col-md-4 col-lg-2">
+            <a href="{% url 'store:product_list_by_category' cat.slug %}" class="category-tile d-block">
+                <i class="bi {{ cat.icon|default:'bi-joystick' }}"></i>
+                <div class="fw-semibold">{{ cat.name }}</div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if featured %}
+    <div class="section-heading">
+        <h2>Featured Products</h2>
+        <a href="{% url 'store:product_list' %}?sort=newest" class="btn btn-sm btn-outline-accent">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-4 mb-5">
+        {% for product in featured %}
+        <div class="col-6 col-md-4 col-lg-3">
+            {% include "store/_product_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if consoles %}
+    <div class="section-heading">
+        <h2>Top Consoles</h2>
+        <a href="{% url 'store:product_list_by_category' 'consoles' %}" class="btn btn-sm btn-outline-accent">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-4 mb-5">
+        {% for product in consoles %}
+        <div class="col-6 col-md-4 col-lg-2">
+            {% include "store/_product_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if new_arrivals %}
+    <div class="section-heading">
+        <h2>New Arrivals</h2>
+        <a href="{% url 'store:product_list' %}?sort=newest" class="btn btn-sm btn-outline-accent">View all <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row g-4 mb-5">
+        {% for product in new_arrivals %}
+        <div class="col-6 col-md-4 col-lg-3">
+            {% include "store/_product_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not featured and not consoles and not new_arrivals %}
+    <div class="empty-state">
+        <i class="bi bi-box-seam"></i>
+        <p>No products yet. Log into the <a href="{% url 'admin:index' %}">admin panel</a> to add some, or run the seed command.</p>
+    </div>
+    {% endif %}
+</div>
+
+<section class="py-5" style="background: var(--bg-panel-2); border-top: 1px solid var(--border-soft); border-bottom: 1px solid var(--border-soft);">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="step-icon mx-auto mb-2"><i class="bi bi-truck"></i></div>
+                <div class="fw-semibold">Free Fast Shipping</div>
+                <div class="text-secondary small">On orders over $75</div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-icon mx-auto mb-2"><i class="bi bi-shield-check"></i></div>
+                <div class="fw-semibold">2-Year Warranty</div>
+                <div class="text-secondary small">On all consoles & devices</div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-icon mx-auto mb-2"><i class="bi bi-arrow-repeat"></i></div>
+                <div class="fw-semibold">30-Day Returns</div>
+                <div class="text-secondary small">No questions asked</div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-icon mx-auto mb-2"><i class="bi bi-headset"></i></div>
+                <div class="fw-semibold">24/7 Support</div>
+                <div class="text-secondary small">Real humans, real help</div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

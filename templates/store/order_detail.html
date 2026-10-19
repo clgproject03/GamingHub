@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} — GameHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <a href="{% url 'store:order_history' %}" class="text-secondary small"><i class="bi bi-arrow-left"></i> Back to orders</a>
+    <div class="d-flex justify-content-between align-items-center mt-2 mb-4 flex-wrap gap-2">
+        <h1 class="h3 mb-0">Order #{{ order.id }}</h1>
+        <span class="badge-platform">{{ order.get_status_display }}</span>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="panel">
+                <h6 class="mb-3">Items</h6>
+                {% for item in order.items.all %}
+                <div class="d-flex justify-content-between mb-2 pb-2 border-bottom border-secondary-subtle">
+                    <span>{{ item.product_name }} &times; {{ item.quantity }}</span>
+                    <span class="fw-bold">${{ item.line_total }}</span>
+                </div>
+                {% endfor %}
+                <div class="d-flex justify-content-between mt-3 fs-5 fw-bold">
+                    <span>Total</span>
+                    <span>${{ order.total_amount }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel">
+                <h6 class="mb-3">Shipping Details</h6>
+                <p class="mb-1">{{ order.full_name }}</p>
+                <p class="mb-1 text-secondary">{{ order.address }}</p>
+                <p class="mb-1 text-secondary">{{ order.city }}, {{ order.postal_code }}</p>
+                <p class="mb-1 text-secondary">{{ order.country }}</p>
+                <p class="mb-1 text-secondary">{{ order.phone }}</p>
+                <p class="mb-0 text-secondary">{{ order.email }}</p>
+                <hr class="border-secondary">
+                <p class="mb-0"><strong>Payment:</strong> {{ order.payment_method }}</p>
+                <p class="mb-0"><strong>Placed:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

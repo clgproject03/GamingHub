@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Wishlist — GameHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="h3 mb-4"><i class="bi bi-heart"></i> My Wishlist</h1>
+    {% if items %}
+    <div class="row g-4">
+        {% for wish in items %}
+        <div class="col-6 col-md-4 col-lg-3">
+            {% with product=wish.product %}
+            {% include "store/_product_card.html" %}
+            {% endwith %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-heart"></i>
+        <p>Your wishlist is empty.</p>
+        <a href="{% url 'store:product_list' %}" class="btn btn-accent">Browse Products</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

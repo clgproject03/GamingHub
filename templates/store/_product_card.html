@@ -1,0 +1,47 @@
+{% load store_extras %}
+<div class="product-card">
+    <a href="{{ product.get_absolute_url }}" class="product-thumb-wrap">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+        {% else %}
+        <i class="bi bi-controller" style="font-size:3rem;color:var(--border-soft);"></i>
+        {% endif %}
+        {% if product.discount_percent %}
+        <span class="badge-discount">-{{ product.discount_percent }}%</span>
+        {% endif %}
+        {% if not product.in_stock %}
+        <span class="badge-oos">Out of stock</span>
+        {% endif %}
+    </a>
+    {% if user.is_authenticated %}
+    <form action="{% url 'store:wishlist_toggle' product.id %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="wishlist-btn {% if product.id in user_wishlist_ids %}active{% endif %}" title="Toggle wishlist">
+            <i class="bi bi-heart{% if product.id in user_wishlist_ids %}-fill{% endif %}"></i>
+        </button>
+    </form>
+    {% endif %}
+    <div class="product-card-body">
+        <span class="product-category">{{ product.category.name }}</span>
+        <a href="{{ product.get_absolute_url }}" class="product-name">{{ product.name }}</a>
+        <span class="product-brand">{{ product.brand.name }} &middot; {{ product.get_platform_display }}</span>
+        {% if product.review_count %}
+        <div class="rating-row">
+            {% for _ in product.average_rating|star_range %}<i class="bi bi-star-fill"></i>{% endfor %}{% for _ in product.average_rating|empty_star_range %}<i class="bi bi-star"></i>{% endfor %}
+            <span class="text-secondary">({{ product.review_count }})</span>
+        </div>
+        {% endif %}
+        <div class="price-row">
+            <span class="price-current">${{ product.discounted_price }}</span>
+            {% if product.discount_percent %}<span class="price-old">${{ product.price }}</span>{% endif %}
+        </div>
+        <form action="{% url 'store:cart_add' product.id %}" method="post" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-accent btn-sm w-100" {% if not product.in_stock %}disabled{% endif %}>
+                <i class="bi bi-cart-plus"></i> {% if product.in_stock %}Add to Cart{% else %}Sold Out{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
