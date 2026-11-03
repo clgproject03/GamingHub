@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 
 import dj_database_url
-from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,11 +21,6 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
-if os.environ.get("VERCEL") == "1":
-    if not os.environ.get("DJANGO_SECRET_KEY"):
-        raise ImproperlyConfigured(
-            "DJANGO_SECRET_KEY environment variable is missing."
-        )
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -35,6 +29,7 @@ ALLOWED_HOSTS = [
     "testserver",
     ".vercel.app",
 ]
+
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.vercel.app",
@@ -93,8 +88,9 @@ TEMPLATES = [
 ]
 
 
-# DATABASE SETTINGS
-# PostgreSQL on Vercel, SQLite for local development.
+# DATABASE
+# PostgreSQL when DATABASE_URL exists.
+# SQLite otherwise (local development / temporary fallback).
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -106,12 +102,6 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-
-elif os.environ.get("VERCEL") == "1":
-    raise ImproperlyConfigured(
-        "DATABASE_URL environment variable is missing."
-    )
-
 else:
     DATABASES = {
         "default": {
